@@ -1,5 +1,7 @@
 package com.skilldistillery.filmquery.app;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
@@ -7,29 +9,18 @@ import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
 import com.skilldistillery.filmquery.entities.Film;
 
 public class FilmQueryApp {
-  
 
-  public static void main(String[] args) {
-    FilmQueryApp app = new FilmQueryApp();
-    Scanner sc = new Scanner(System.in);
-    int filmId = 0;
-    do {
-    	System.out.println("Enter the actor ID who you want to see films from");
-    	filmId = sc.nextInt();
-    	sc.nextLine();
-    	app.test(filmId);
-    } while (filmId != 0);
-    System.out.println("Adieu");
-    
-    sc.close();
-//    app.launch(); this is the weekend project
-  }
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		FilmQueryApp app = new FilmQueryApp();
+		Scanner sc = new Scanner(System.in);
+		app.startUserInterface(sc);
+	}
 
-  private void test(int filmId) {
-	  DatabaseAccessor db = new DatabaseAccessorObject();
-    Film film = db.findFilmById(1); //do this method first
-    System.out.println(film);
-  }
+	private void test(int filmId) throws ClassNotFoundException, SQLException {
+		DatabaseAccessor db = new DatabaseAccessorObject();
+		Film film = db.findFilmById(filmId); // do this method first
+		System.out.println("is this working?");
+	}
 
 //  private void launch() {
 //    Scanner input = new Scanner(System.in);
@@ -38,9 +29,51 @@ public class FilmQueryApp {
 //    
 //    input.close();
 //  }
+	private void printFilmList() throws ClassNotFoundException, SQLException {
+		DatabaseAccessor db = new DatabaseAccessorObject();
+		for (Film film : db.findFilmByKeyword(null)) {
+			System.out.println(film.getTitle() + " " + film.getReleaseYear() + " " + film.getRating() + " \n"
+					+ film.getDescription() + "\n");
+		}
+	}
 
-  private void startUserInterface(Scanner input) {
-    
-  }
+	private void startUserInterface(Scanner sc) throws ClassNotFoundException, SQLException {
+		int input = 0;
+		DatabaseAccessor db = new DatabaseAccessorObject();
+		System.out.println("Select would you like to do");
+		System.out.println("1) Look up a film by its ID");
+		System.out.println("2) Look up a film by a keyword");
+		System.out.println("3) Exit the application");
+		input = sc.nextInt();
+		if (input == 3) {
+			System.out.println("Adieu");
+		}
+		if (input == 1) {
+			System.out.println("Enter the numerical ID of the film you'd like to see");
+			input = sc.nextInt();
+			Film searchedFilm = db.findFilmById(input);
+			System.out.println(searchedFilm.getTitle() + " " + searchedFilm.getReleaseYear() + " "
+					+ searchedFilm.getRating() + " \n" + searchedFilm.getDescription());
+			if (db.findFilmById(input).isEmpty()) {
+				System.out.println("There is no film matching your request");
+			}
+				startUserInterface(sc);
+		}
 
+		if (input == 2) {
+			System.out.println("What keyword would you like to search for?");
+			String keyword = sc.next();
+			db.findFilmByKeyword(keyword);
+			List<Film> searchedFilm = db.findFilmByKeyword(keyword);
+			for (Film film : searchedFilm) {
+				System.out.println(film.getTitle() + " " + film.getReleaseYear() + " " + film.getRating() + " \n"
+						+ film.getDescription() + "\n");
+			}
+			if (db.findFilmByKeyword(keyword).isEmpty()) {
+				System.out.println("There is no film matching your request");
+			}
+			startUserInterface(sc);
+		}
+		sc.close();
+	}
 }
