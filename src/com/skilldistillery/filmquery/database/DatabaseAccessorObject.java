@@ -12,18 +12,21 @@ import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
 
 public class DatabaseAccessorObject implements DatabaseAccessor {
+	String user = "student";
+	String pass = "student";
 	private static final String URL = "jdbc:mysql://localhost:3306/sdvid";
 
 	@Override
 	public Film findFilmById(int filmNum) throws ClassNotFoundException, SQLException {
+		Connection conn = DriverManager.getConnection(URL, user, pass);
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Film film = new Film();
-		String user = "student";
-		String pass = "student";
-		Connection conn = DriverManager.getConnection(URL, user, pass);
 		String sql = "SELECT * FROM film WHERE id = ?";
+		String sqlLang = "SELECT film.*, language.name FROM film WHERE id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
+		PreparedStatement stmt2 = conn.prepareStatement(sqlLang);
 		stmt.setInt(1, filmNum);
+		stmt2.setInt(1, filmNum);
 		ResultSet fResult = stmt.executeQuery();
 		if (fResult.next()) {
 			film.setId(fResult.getInt("id"));
@@ -31,11 +34,11 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setDescription(fResult.getString("description"));
 			film.setReleaseYear(fResult.getShort("release_year"));
 			film.setLanguageId(fResult.getInt("language_id"));
-//			film.setLanguage(actorResult.getString("language"));
+		film.setLangName(findLangNamebyId(fResult.getInt("language_id")));
 			film.setRentalDuration(fResult.getInt("rental_duration"));
 			film.setRentalRate(fResult.getDouble("rental_rate"));
 			film.setLength(fResult.getInt("length"));
-			film.setReplacementCost(fResult.getDouble("replacement_cost"));
+		film.setReplacementCost(fResult.getDouble("replacement_cost"));
 			film.setRating(fResult.getString("rating"));
 			film.setSpecialFeatures(fResult.getString("special_features"));
 		}
@@ -43,13 +46,30 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		conn.close();
 		return film;
 	}
+	private String findLangNamebyId(int languageId) throws ClassNotFoundException, SQLException {
+		DatabaseAccessor langRetriever = new DatabaseAccessorObject();	
+		String user = "student";
+		String pass = "student";
+		String URL = "jdbc:mysql://localhost:3306/sdvid";
+		Connection conn = DriverManager.getConnection(URL, user, pass);
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		String sql = "SELECT * FROM language WHERE id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, languageId);
+		ResultSet fResult2 = stmt.executeQuery();
+		String langName = null;
+		if (fResult2.next()) {
+			langName = fResult2.getString("name");
+		}
+		fResult2.close();
+		conn.close();
+		return langName;
+	}
 
 	@Override
 	public List<Film> findFilmByKeyword(String keyword) throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		List<Film> filmsKeyword = new ArrayList<Film>();
-		String user = "student";
-		String pass = "student";
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 		String sql = "SELECT * FROM film WHERE film.title LIKE ? OR film.description LIKE ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
@@ -63,7 +83,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			kwFilm.setDescription(kwResult.getString("description"));
 			kwFilm.setReleaseYear(kwResult.getShort("release_year"));
 			kwFilm.setLanguageId(kwResult.getInt("language_id"));
-//			kwFilm.setLanguage(actorResult.getString("language"));
+		kwFilm.setLangName(findLangNamebyId(kwResult.getInt("language_id")));
 			kwFilm.setRentalDuration(kwResult.getInt("rental_duration"));
 			kwFilm.setRentalRate(kwResult.getDouble("rental_rate"));
 			kwFilm.setLength(kwResult.getInt("length"));
@@ -78,10 +98,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	}
 
 	public Actor findActorById(int actorId) throws ClassNotFoundException, SQLException {
-
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		Actor actor = null;
-		String user = "student";
-		String pass = "student";
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 		String sql = "SELECT id, first_name, last_name FROM actor WHERE id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
@@ -99,10 +117,9 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return actor;
 	}
 
-	public List<Film> findFilmsByActorId(int actorId) {
+	public List<Film> findFilmsByActorId(int actorId) throws ClassNotFoundException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		List<Film> films = new ArrayList<>();
-		String user = "student";
-		String pass = "student";
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
 			String sql = "SELECT * FROM film JOIN film_actor ON film.id = film_actor.film_id WHERE film_actor.actor_id = ?";
@@ -135,7 +152,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	}
 
 	@Override
-	public List<Actor> findActorsByFilmId(int filmId) {
+	public List<Actor> findActorsByFilmId(int filmId) throws ClassNotFoundException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		List<Actor> cast = new ArrayList<>();
 		String user = "student";
 		String pass = "student";
@@ -150,7 +168,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				String firstName = rs.getString("first_name");
 				String lastName = rs.getString("last_name");
 			}
-
 			rs.close();
 			stmt.close();
 			conn.close();

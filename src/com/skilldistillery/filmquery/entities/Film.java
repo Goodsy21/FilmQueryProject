@@ -5,19 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+
 public class Film implements List<Film> {
 	private int id;	
 	private String title;
 	private String description;
 	private short releaseYear;
 	private int languageId;
-//	private String language;
+	private String langName;
 	private int rentalDuration;
 	private double rentalRate;
 	private int length;
 	private double replacementCost;
 	private String rating;
 	private String specialFeatures;
+	
 	
 	public int getId() {
 		return id;
@@ -59,13 +61,13 @@ public class Film implements List<Film> {
 		this.languageId = languageId;
 	}
 
-//	public String getLanguage() {
-//		return language;
-//	}
-//
-//	public void setLanguage(String language) {
-//		this.language = language;
-//	}
+	public String getLangName() {
+		return langName;
+	}
+
+	public void setLangName(String langName) {
+		this.langName = langName;
+	}
 
 	public int getRentalDuration() {
 		return rentalDuration;
@@ -118,7 +120,7 @@ public class Film implements List<Film> {
 	@Override
 	public String toString() {
 		return "Film [id=" + id + ", title=" + title + ", description=" + description + ", releaseYear=" + releaseYear
-				+ ", languageId=" + languageId + ", language=" + ", rentalDuration=" + rentalDuration							//add language variable again
+				+ ", languageId=" + languageId + ", language.name=" + langName + ", rentalDuration=" + rentalDuration						
 				+ ", rentalRate=" + rentalRate + ", length=" + length + ", replacementCost=" + replacementCost
 				+ ", rating=" + rating + ", specialFeatures=" + specialFeatures + "]";
 	}

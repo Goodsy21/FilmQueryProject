@@ -11,7 +11,7 @@ public interface DatabaseAccessor {
 
 	public Actor findActorById(int actorId) throws ClassNotFoundException, SQLException;
 
-	public List<Actor> findActorsByFilmId(int filmId);
+	public List<Actor> findActorsByFilmId(int filmId) throws ClassNotFoundException;
 
 	public List<Film> findFilmByKeyword(String keyword) throws ClassNotFoundException, SQLException;
 

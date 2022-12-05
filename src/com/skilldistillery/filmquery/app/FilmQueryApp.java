@@ -16,19 +16,6 @@ public class FilmQueryApp {
 		app.startUserInterface(sc);
 	}
 
-	private void test(int filmId) throws ClassNotFoundException, SQLException {
-		DatabaseAccessor db = new DatabaseAccessorObject();
-		Film film = db.findFilmById(filmId); // do this method first
-		System.out.println("is this working?");
-	}
-
-//  private void launch() {
-//    Scanner input = new Scanner(System.in);
-//    
-//    startUserInterface(input);
-//    
-//    input.close();
-//  }
 	private void printFilmList() throws ClassNotFoundException, SQLException {
 		DatabaseAccessor db = new DatabaseAccessorObject();
 		for (Film film : db.findFilmByKeyword(null)) {
@@ -45,34 +32,35 @@ public class FilmQueryApp {
 		System.out.println("2) Look up a film by a keyword");
 		System.out.println("3) Exit the application");
 		input = sc.nextInt();
-		if (input == 3) {
-			System.out.println("Adieu");
-		}
 		if (input == 1) {
 			System.out.println("Enter the numerical ID of the film you'd like to see");
 			input = sc.nextInt();
 			Film searchedFilm = db.findFilmById(input);
-			System.out.println(searchedFilm.getTitle() + " " + searchedFilm.getReleaseYear() + " "
-					+ searchedFilm.getRating() + " \n" + searchedFilm.getDescription());
-			if (db.findFilmById(input).isEmpty()) {
+			if (searchedFilm.getTitle() == null && searchedFilm.getDescription() == null) {
 				System.out.println("There is no film matching your request");
+			} else {
+				System.out.println(
+						searchedFilm.getTitle() + " " + searchedFilm.getReleaseYear() + " " + searchedFilm.getRating()
+								+ " " + searchedFilm.getLangName() + " \n" + searchedFilm.getDescription());
 			}
-				startUserInterface(sc);
+			startUserInterface(sc);
 		}
 
 		if (input == 2) {
 			System.out.println("What keyword would you like to search for?");
 			String keyword = sc.next();
-			db.findFilmByKeyword(keyword);
 			List<Film> searchedFilm = db.findFilmByKeyword(keyword);
 			for (Film film : searchedFilm) {
-				System.out.println(film.getTitle() + " " + film.getReleaseYear() + " " + film.getRating() + " \n"
+				System.out.println(film.getTitle() + " " + film.getReleaseYear() + " " + film.getRating() + " " + film.getLangName() + " \n"
 						+ film.getDescription() + "\n");
 			}
 			if (db.findFilmByKeyword(keyword).isEmpty()) {
 				System.out.println("There is no film matching your request");
 			}
 			startUserInterface(sc);
+		}
+		if (input == 3) {
+			System.out.println("Adieu");
 		}
 		sc.close();
 	}
