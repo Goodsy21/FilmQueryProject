@@ -19,10 +19,31 @@ public class Film implements List<Film> {
 	private double replacementCost;
 	private String rating;
 	private String specialFeatures;
+	private List<Actor> cast;
 	
 	
 	public int getId() {
 		return id;
+	}
+
+	public List<Actor> getCast() {
+		return cast;
+	}
+	
+	public String getCastNames() {
+		
+		String nameListString = "";
+		
+		for (int i = 0; i < cast.size(); i++) {
+			
+			nameListString += cast.get(i).getFirstName() + " " + cast.get(i).getLastName() + "\n";
+		}		
+		
+		return nameListString;
+	}
+
+	public void setCast(List<Actor> cast) {
+		this.cast = cast;
 	}
 
 	public void setId(int id) {
@@ -120,9 +141,9 @@ public class Film implements List<Film> {
 	@Override
 	public String toString() {
 		return "Film [id=" + id + ", title=" + title + ", description=" + description + ", releaseYear=" + releaseYear
-				+ ", languageId=" + languageId + ", language.name=" + langName + ", rentalDuration=" + rentalDuration						
+				+ ", languageId=" + languageId + ", langName=" + langName + ", rentalDuration=" + rentalDuration
 				+ ", rentalRate=" + rentalRate + ", length=" + length + ", replacementCost=" + replacementCost
-				+ ", rating=" + rating + ", specialFeatures=" + specialFeatures + "]";
+				+ ", rating=" + rating + ", specialFeatures=" + specialFeatures + ", cast=" + cast + "]";
 	}
 
 	public Film(int filmId, String title, String desc, short releaseYear, int langId, int rentDur, double rate,
@@ -270,6 +291,16 @@ public class Film implements List<Film> {
 	public <T> T[] toArray(T[] arg0) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void findActorsByFilmId(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void findActorsByFilmId(List<Actor> findActorsByFilmId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

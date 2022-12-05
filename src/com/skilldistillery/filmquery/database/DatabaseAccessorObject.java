@@ -41,6 +41,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		film.setReplacementCost(fResult.getDouble("replacement_cost"));
 			film.setRating(fResult.getString("rating"));
 			film.setSpecialFeatures(fResult.getString("special_features"));
+			film.setCast(findActorsByFilmId(fResult.getInt("id")));
 		}
 		fResult.close();
 		conn.close();
@@ -90,6 +91,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			kwFilm.setReplacementCost(kwResult.getDouble("replacement_cost"));
 			kwFilm.setRating(kwResult.getString("rating"));
 			kwFilm.setSpecialFeatures(kwResult.getString("special_features"));
+			kwFilm.setCast(findActorsByFilmId(kwResult.getInt("id")));
 			filmsKeyword.add(kwFilm);
 		}
 		kwResult.close();
@@ -159,14 +161,17 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		String pass = "student";
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
-			String sql = "SELECT film_actor.first_name, film_actor.last_name FROM actor JOIN actor.id ON film_actor.actor_id = film_actor.film_id WHERE film_actor.actor_id = ?";
+			String sql = "SELECT actor.first_name, actor.last_name FROM actor, film_actor WHERE actor.id = film_actor.actor_id AND film_actor.film_id = ?";
+			
+			
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				filmId = rs.getInt("id");
-				String firstName = rs.getString("first_name");
-				String lastName = rs.getString("last_name");
+				Actor actor = new Actor();
+				actor.setFirstName(rs.getString("first_name"));
+				actor.setLastName(rs.getString("last_name"));
+				cast.add(actor);
 			}
 			rs.close();
 			stmt.close();

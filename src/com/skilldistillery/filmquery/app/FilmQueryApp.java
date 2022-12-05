@@ -41,7 +41,7 @@ public class FilmQueryApp {
 			} else {
 				System.out.println(
 						searchedFilm.getTitle() + " " + searchedFilm.getReleaseYear() + " " + searchedFilm.getRating()
-								+ " " + searchedFilm.getLangName() + " \n" + searchedFilm.getDescription());
+								+ " " + searchedFilm.getLangName() + " \n" + searchedFilm.getDescription() + "\n" + searchedFilm.getCastNames());
 			}
 			startUserInterface(sc);
 		}
@@ -52,7 +52,7 @@ public class FilmQueryApp {
 			List<Film> searchedFilm = db.findFilmByKeyword(keyword);
 			for (Film film : searchedFilm) {
 				System.out.println(film.getTitle() + " " + film.getReleaseYear() + " " + film.getRating() + " " + film.getLangName() + " \n"
-						+ film.getDescription() + "\n");
+						+ film.getDescription() + "\n" + film.getCastNames());
 			}
 			if (db.findFilmByKeyword(keyword).isEmpty()) {
 				System.out.println("There is no film matching your request");
